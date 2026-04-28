@@ -1,7 +1,7 @@
-# vuejs-scaffold
+# Opinionated Vue.js Starter
 
 This project serves as an opinionated baseline for Vue.js projects. The idea: It orients itself on the scaffolding from
-Vuejs itself, using the features I need from that. On top of that I add even more:
+VueJs itself, using the features I need from that. On top of that I add even more:
 
 - TypeScript
 - Vue Router
@@ -37,7 +37,7 @@ Vuejs itself, using the features I need from that. On top of that I add even mor
 
 ```sh
 git clone <this-repo>
-cd vuejs-scaffold
+cd opinionated-vuejs-starter
 pnpm install
 pnpm dev          # http://localhost:5173
 ```
