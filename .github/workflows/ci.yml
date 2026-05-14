@@ -39,7 +39,7 @@ jobs:
         run: pnpm build
 
       - name: Install Playwright (Chromium headless-shell only)
-        run: pnpm exec playwright install --with-deps --only-shell
+        run: pnpm exec playwright install --with-deps --only-shell chromium
 
       - name: End-to-end tests (Chromium only)
         run: pnpm test:e2e --project=chromium
