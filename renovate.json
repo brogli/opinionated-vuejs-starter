@@ -4,8 +4,19 @@
   "minimumReleaseAge": "7 days",
   "packageRules": [
     {
+      "description": "Override security:minimumReleaseAgeNpm (pulled in via config:best-practices), which sets 3 days for the npm datasource and would otherwise shadow our top-level 7 days.",
+      "matchDatasources": ["npm"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "Pin prod dependencies too (devDependencies are covered by :pinDevDependencies from config:best-practices) — this is an app scaffold, not a library, so nobody consumes our ranges.",
+      "matchDatasources": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "rangeStrategy": "pin"
+    },
+    {
       "description": "Auto-merge minor and patch updates",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest"],
       "automerge": true
     },
     {
