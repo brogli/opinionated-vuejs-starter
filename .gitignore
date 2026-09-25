@@ -27,6 +27,7 @@ coverage
 *.tsbuildinfo
 
 .eslintcache
+.stylelintcache
 
 # Vitest
 __screenshots__/

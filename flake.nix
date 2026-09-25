@@ -9,6 +9,8 @@
           packages = with nixpkgs.legacyPackages.${system}; [
             nodejs_24
             pnpm_11
+            treefmt
+            nixfmt
           ];
         };
       });
