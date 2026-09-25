@@ -11,33 +11,26 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 - Vitest
 - Playwright
 - pnpm
-- PrimeVue
-- PrimeIcons
+- OpenVue (MIT fork of PrimeVue 4)
+- OpenIcons
 - Tailwind CSS
 - Renovate
 
 ## Prerequisites
 
-- **Node.js** — version pinned in `.nvmrc` (and enforced via `engines` in `package.json`). Use a version manager (`nvm`
-  or `fnm`) so it picks up automatically:
-  ```sh
-  nvm install && nvm use   # reads .nvmrc
-  # or
-  fnm use                  # reads .nvmrc (fnm auto-switches on cd if configured)
-  ```
-- **pnpm** — version pinned via `packageManager` in `package.json`. Easiest path
-  is [Corepack](https://nodejs.org/api/corepack.html), which ships with Node and will use the exact pinned version
-  automatically:
-  ```sh
-  corepack enable
-  ```
-  Alternatively: `npm install -g pnpm` or follow the [pnpm install docs](https://pnpm.io/installation).
+- [Nix](https://nixos.org/download/) with flakes enabled
+- [direnv](https://direnv.net/) hooked into your shell ([nix-direnv](https://github.com/nix-community/nix-direnv)
+  recommended for caching)
+
+Node.js and pnpm come from the dev shell in `flake.nix`, pinned via `flake.lock`. On first `cd` into the repo run
+`direnv allow`; afterwards the shell loads automatically. Without direnv: `nix develop`.
 
 ## Getting started
 
 ```sh
 git clone <this-repo>
 cd opinionated-vuejs-starter
+direnv allow
 pnpm install
 pnpm dev          # http://localhost:5173
 ```

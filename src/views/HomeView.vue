@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
+import Button from 'openvue/button'
 import { storeToRefs } from 'pinia'
 import CounterDisplay from '@/components/CounterDisplay.vue'
 import { useCounterStore } from '@/stores/counter'
@@ -23,6 +23,6 @@ const { count } = storeToRefs(counter)
       <CounterDisplay :value="count" label="Count" size="lg" />
     </div>
 
-    <Button icon="pi pi-plus" label="Increment" size="large" @click="counter.increment" />
+    <Button icon="oi oi-plus" label="Increment" size="large" @click="counter.increment" />
   </section>
 </template>
