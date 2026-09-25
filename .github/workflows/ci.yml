@@ -51,7 +51,7 @@ jobs:
         run: pnpm exec playwright install --with-deps --only-shell chromium
 
       - name: End-to-end tests (Chromium only)
-        run: pnpm test:e2e --project=chromium
+        run: pnpm test:e2e
 
       - name: Upload Playwright report
         if: ${{ !cancelled() && failure() }}

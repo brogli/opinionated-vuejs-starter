@@ -21,7 +21,7 @@ When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one chan
 - `pnpm preview` — serve the production build on `http://localhost:4173`
 - `pnpm type-check` — `vue-tsc --build` only
 - `pnpm test:unit` — Vitest (jsdom). Append a path/pattern to run a subset, e.g. `pnpm test:unit HelloWorld`
-- `pnpm test:e2e` — Playwright. Browser binaries are per-machine (`~/.cache/ms-playwright/`), shared across projects; install once per machine with `pnpm exec playwright install` if missing. Useful flags: `--project=chromium`, `--debug`, or pass a spec path.
+- `pnpm test:e2e` — Playwright. Browser binaries are per-machine (`~/.cache/ms-playwright/`), shared across projects; install once per machine with `pnpm exec playwright install --with-deps chromium` if missing. Only the Chromium project is configured. Useful flags: `--debug`, or pass a spec path.
 - `pnpm lint` — runs `lint:oxlint`, `lint:eslint`, `lint:stylelint` sequentially (all with `--fix`)
 - `pnpm format` — `oxfmt src/`
 - `treefmt` — repo-wide lint fixes + formatting (see below); `treefmt --ci` is the CI check (fails on unformatted files

@@ -33,7 +33,7 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 
 - treefmt
 
-### Dependency managament
+### Dependency management
 
 - Renovate
 
@@ -80,7 +80,7 @@ pnpm dev          # http://localhost:5173
 Playwright's test runner is installed by `pnpm install`. Browser binaries, however, live in a per-machine cache (`~/.cache/ms-playwright/`) and are shared across projects. Install them per [Playwright's docs](https://playwright.dev/docs/intro#installing-playwright) — once per machine, and again after any `@playwright/test` version bump:
 
 ```sh
-pnpm exec playwright install --with-deps
+pnpm exec playwright install --with-deps chromium
 ```
 
 Then:
@@ -90,7 +90,6 @@ Then:
 pnpm test:e2e
 
 # Common flags
-pnpm test:e2e --project=chromium
 pnpm test:e2e e2e/counter.spec.ts
 pnpm test:e2e --debug
 ```
