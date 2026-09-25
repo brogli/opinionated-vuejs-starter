@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
-import Card from 'primevue/card'
+import Button from 'openvue/button'
+import Card from 'openvue/card'
 import { storeToRefs } from 'pinia'
 import CounterDisplay from '@/components/CounterDisplay.vue'
 import { useCounterStore } from '@/stores/counter'
@@ -37,7 +37,7 @@ const { count, doubleCount } = storeToRefs(counter)
 
     <div>
       <Button
-        icon="pi pi-refresh"
+        icon="oi oi-refresh"
         label="Reset"
         severity="secondary"
         outlined

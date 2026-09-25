@@ -13,24 +13,33 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        # Node and pnpm come from the flake's dev shell, same as locally via direnv.
+        shell: nix develop --command bash -eo pipefail {0}
     steps:
       - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@078e9d416474b29c0c387560859308974f7e9c53 # v6
+      - name: Install Nix
+        uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
 
-      - name: Install Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - name: Get pnpm store path
+        id: pnpm-store
+        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-store-${{ runner.os }}-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      - name: Lint and format check
+        run: treefmt --ci
 
       - name: Unit tests
         run: pnpm test:unit --run
@@ -38,11 +47,22 @@ jobs:
       - name: Build (includes type-check)
         run: pnpm build
 
+      - name: Get Playwright version
+        id: playwright
+        run: echo "version=$(pnpm exec playwright --version | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # Skips the download when the cache hit; --with-deps still ensures the apt packages.
       - name: Install Playwright (Chromium headless-shell only)
         run: pnpm exec playwright install --with-deps --only-shell chromium
 
       - name: End-to-end tests (Chromium only)
-        run: pnpm test:e2e --project=chromium
+        run: pnpm test:e2e
 
       - name: Upload Playwright report
         if: ${{ !cancelled() && failure() }}
