@@ -9,8 +9,10 @@ extending it, prefer minimal, idiomatic additions that stay useful across future
 
 ## Package manager
 
-Use **pnpm** exclusively. Do not introduce `npm`/`yarn` lockfiles. Node is pinned to `24.14.1` in both `.nvmrc` and
-`package.json` `engines` (`@tsconfig/node24` is the TS baseline). When bumping Node, update both in one change.
+Use **pnpm** exclusively. Do not introduce `npm`/`yarn` lockfiles. Node and pnpm come from the Nix dev shell in
+`flake.nix` (`nodejs_24`, `pnpm_11` from a stable nixpkgs release), loaded via direnv (`.envrc`) locally and via
+`nix develop` in CI. Do not add `.nvmrc`, `engines` or `packageManager` — `flake.lock` is the single source of truth.
+When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one change.
 
 ## Commands
 
@@ -41,11 +43,13 @@ Formatting config lives in `.oxfmtrc.json` (no semicolons, single quotes). Keep 
 
 ## Architecture
 
-Standard Vite + Vue 3 SFC setup. Entry point `src/main.ts` wires up Pinia, Vue Router, and PrimeVue into the root
+Standard Vite + Vue 3 SFC setup. Entry point `src/main.ts` wires up Pinia, Vue Router, and OpenVue into the root
 `App.vue` before mounting to `#app`.
 
-**PrimeVue** (v4, styled mode) with a **project preset in `src/theme/preset.ts`** that extends Aura via `definePreset`.
-All PrimeVue design-token overrides live in that file — do not inline theme tweaks in `main.ts` or in component styles.
+**OpenVue** (MIT fork of PrimeVue 4.5.5, same API; styled mode) with a **project preset in `src/theme/preset.ts`** that
+extends Aura from `@openuxkit/themes` via `definePreset`. Do not add `primevue`, `@primeuix/*` or `primeicons` — they
+are no longer MIT. Icons come from `@openvue/openicons` (`oi oi-*` classes).
+All OpenVue design-token overrides live in that file — do not inline theme tweaks in `main.ts` or in component styles.
 Components are **imported explicitly per-file**, not registered globally.
 Services like `ToastService`, `ConfirmationService`, `DialogService` must be registered in `main.ts` with `app.use(...)`
 before their components/composables work.
@@ -54,10 +58,10 @@ before their components/composables work.
 
 - `@tailwindcss/vite` plugin in `vite.config.ts` — CSS-first config, no `tailwind.config.js`.
 - `src/assets/main.css` is the only stylesheet: it declares the CSS layer order and imports Tailwind plus
-  `tailwindcss-primeui` (which exposes PrimeVue theme tokens as Tailwind utilities like `bg-primary`,
-  `text-surface-500`).
-- CSS layer order is `theme, base, primevue, components, utilities`, mirrored in `main.ts` via `cssLayer` in PrimeVue
-  options. This guarantees Tailwind utilities override PrimeVue component styles when both apply.
+  `tailwindcss-primeui` (MIT; OpenVue keeps the `p` token prefix, so it exposes OpenVue theme tokens as Tailwind
+  utilities like `bg-primary`, `text-surface-500`).
+- CSS layer order is `theme, base, openvue, components, utilities`, mirrored in `main.ts` via `cssLayer` in OpenVue
+  options. This guarantees Tailwind utilities override OpenVue component styles when both apply.
 - Prefer Tailwind utilities over scoped `<style>` blocks. Reserve `<style>` only for things Tailwind can't express
   cleanly (keyframes, complex selectors).
 
@@ -122,6 +126,8 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 - **Auto-merge**: minor/patch/pin/digest on ≥1.0.0; lockfile maintenance.
 - **Manual**: majors; any 0.x minor/patch (semver treats 0.minor as potentially breaking). The 0.x exclusion rule must come **last** in `packageRules` to override the general automerge rule — Renovate applies later rules with higher priority.
 - `minimumReleaseAge: 7 days` as supply-chain buffer.
+- `nix` manager enabled: `flake.lock` (Node/pnpm patches) refreshes via lockfile maintenance. Moving to the next
+  nixpkgs release (e.g. `nixos-26.11`) in `flake.nix` is manual.
 - `platformAutomerge: false` is deliberate — GitHub's native auto-merge has not worked reliably here. Do not remove it.
 
 Requires the Mend GitHub App on the consuming repo; cloning the scaffold does not enable it.

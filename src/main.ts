@@ -1,9 +1,9 @@
 import './assets/main.css'
-import 'primeicons/primeicons.css'
+import '@openvue/openicons/openicons.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import PrimeVue from 'primevue/config'
+import OpenVue from 'openvue/config'
 
 import App from './App.vue'
 import router from './router'
@@ -13,13 +13,13 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue, {
+app.use(OpenVue, {
   theme: {
     preset: AppPreset,
     options: {
       cssLayer: {
-        name: 'primevue',
-        order: 'theme, base, primevue, components, utilities',
+        name: 'openvue',
+        order: 'theme, base, openvue, components, utilities',
       },
     },
   },

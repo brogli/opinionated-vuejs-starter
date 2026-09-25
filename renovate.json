@@ -31,6 +31,9 @@
       "automerge": false
     }
   ],
+  "nix": {
+    "enabled": true
+  },
   "platformAutomerge": false,
   "lockFileMaintenance": {
     "enabled": true,
