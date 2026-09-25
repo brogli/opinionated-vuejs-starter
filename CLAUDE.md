@@ -22,8 +22,10 @@ When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one chan
 - `pnpm type-check` — `vue-tsc --build` only
 - `pnpm test:unit` — Vitest (jsdom). Append a path/pattern to run a subset, e.g. `pnpm test:unit HelloWorld`
 - `pnpm test:e2e` — Playwright. Browser binaries are per-machine (`~/.cache/ms-playwright/`), shared across projects; install once per machine with `pnpm exec playwright install` if missing. Useful flags: `--project=chromium`, `--debug`, or pass a spec path.
-- `pnpm lint` — runs `lint:oxlint` then `lint:eslint` sequentially (both with `--fix`)
+- `pnpm lint` — runs `lint:oxlint`, `lint:eslint`, `lint:stylelint` sequentially (all with `--fix`)
 - `pnpm format` — `oxfmt src/`
+- `treefmt` — repo-wide lint fixes + formatting (see below); `treefmt --ci` is the CI check (fails on unformatted files
+  or lint errors)
 
 ## Linting & formatting
 
@@ -38,6 +40,14 @@ Lint pipeline (see `eslint.config.ts`):
 2. `eslint` runs second with Vue + TS configs, plus Playwright rules scoped to `e2e/**` and Vitest rules scoped to
    `src/**/__tests__/*`. `eslint-plugin-oxlint` disables ESLint rules that oxlint already covers to avoid
    double-reporting.
+3. `stylelint` lints CSS and `.vue` `<style>` blocks (`stylelint.config.mjs`: standard + standard-vue + Tailwind v4
+   at-rules). Linting only — oxfmt owns formatting. It does not read `.gitignore` itself, hence `--ignore-path`.
+
+`treefmt.toml` is the repo-wide alternative to the pnpm scripts, which stay as create-vue ships them:
+oxlint/eslint/stylelint → oxfmt (lower `priority` runs first) over `*.vue`/`*.ts`/`*.css`, oxfmt over `*.md`, nixfmt
+over `*.nix`. JS tools run via `pnpm exec` so versions stay in `pnpm-lock.yaml`; `treefmt` and `nixfmt` come from the nix
+shell. Keep treefmt's oxfmt includes a superset of the file types under `src/`, so it covers everything `pnpm format`
+does.
 
 Formatting config lives in `.oxfmtrc.json` (no semicolons, single quotes). Keep this in sync with any editor settings.
 

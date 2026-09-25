@@ -1,4 +1,5 @@
 @layer theme, base, openvue, components, utilities;
 
 @import 'tailwindcss';
+
 @plugin 'tailwindcss-primeui';

@@ -3,6 +3,10 @@
 This project serves as an opinionated baseline for Vue.js projects. The idea: It orients itself on the scaffolding from
 VueJs itself, using the features I need from that. On top of that I add even more:
 
+## Features
+
+### From VueJs Scaffolding
+
 - TypeScript
 - Vue Router
 - Pinia
@@ -10,11 +14,33 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 - Oxfmt
 - Vitest
 - Playwright
+
+### Package Manager
+
 - pnpm
+
+### Component Library
+
 - OpenVue (MIT fork of PrimeVue 4)
 - OpenIcons
+
+### CSS
+
 - Tailwind CSS
+- Stylelint
+
+### Repo wide linting and formatting
+
+- treefmt
+
+### Dependency managament
+
 - Renovate
+
+### Dev-Env and CI Env
+
+- direnv
+- Nix shell
 
 ## Prerequisites
 
@@ -38,15 +64,16 @@ pnpm dev          # http://localhost:5173
 ## Scripts
 
 | Command           | What it does                                         |
-|-------------------|------------------------------------------------------|
+| ----------------- | ---------------------------------------------------- |
 | `pnpm dev`        | Vite dev server with HMR (`http://localhost:5173`)   |
 | `pnpm build`      | Type-check + production build (runs in parallel)     |
 | `pnpm preview`    | Serve the production build (`http://localhost:4173`) |
 | `pnpm type-check` | `vue-tsc --build` only                               |
 | `pnpm test:unit`  | Unit tests with Vitest (jsdom)                       |
 | `pnpm test:e2e`   | End-to-end tests with Playwright                     |
-| `pnpm lint`       | Runs oxlint then ESLint (both with `--fix`)          |
+| `pnpm lint`       | oxlint, ESLint, Stylelint in sequence (`--fix`)      |
 | `pnpm format`     | Formats `src/` with oxfmt                            |
+| `treefmt`         | Repo-wide: lint fixes + oxfmt (incl. `.md`), nixfmt  |
 
 ### End-to-end tests
 
