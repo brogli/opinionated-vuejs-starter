@@ -27,6 +27,7 @@ coverage
 *.tsbuildinfo
 
 .eslintcache
+.stylelintcache
 
 # Vitest
 __screenshots__/
@@ -36,3 +37,6 @@ __screenshots__/
 
 test-results/
 playwright-report/
+
+# direnv
+.direnv/
