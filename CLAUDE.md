@@ -10,7 +10,7 @@ extending it, prefer minimal, idiomatic additions that stay useful across future
 ## Package manager
 
 Use **pnpm** exclusively. Do not introduce `npm`/`yarn` lockfiles. Node and pnpm come from the Nix dev shell in
-`flake.nix` (`nodejs_24`, `pnpm_11` from a stable nixpkgs release), loaded via direnv (`.envrc`) locally and via
+`flake.nix` (`nodejs_24`, `pnpm_11` from `nixos-unstable`), loaded via direnv (`.envrc`) locally and via
 `nix develop` in CI. Do not add `.nvmrc`, `engines` or `packageManager` — `flake.lock` is the single source of truth.
 When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one change.
 
@@ -136,8 +136,8 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 - **Auto-merge**: minor/patch/pin/digest on ≥1.0.0; lockfile maintenance.
 - **Manual**: majors; any 0.x minor/patch (semver treats 0.minor as potentially breaking). The 0.x exclusion rule must come **last** in `packageRules` to override the general automerge rule — Renovate applies later rules with higher priority.
 - `minimumReleaseAge: 7 days` as supply-chain buffer.
-- `nix` manager enabled: `flake.lock` (Node/pnpm patches) refreshes via lockfile maintenance. Moving to the next
-  nixpkgs release (e.g. `nixos-26.11`) in `flake.nix` is manual.
+- `nix` manager enabled: `flake.lock` refreshes via lockfile maintenance, gated by CI. The majors stay fixed by the
+  attribute names (`nodejs_24`, `pnpm_11`); bumping them is manual.
 - `platformAutomerge: false` is deliberate — GitHub's native auto-merge has not worked reliably here. Do not remove it.
 
 Requires the Mend GitHub App on the consuming repo; cloning the scaffold does not enable it.
