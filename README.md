@@ -44,9 +44,11 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 
 ## Prerequisites
 
-- [Nix](https://nixos.org/download/) with flakes enabled
-- [direnv](https://direnv.net/) hooked into your shell ([nix-direnv](https://github.com/nix-community/nix-direnv)
-  recommended for caching)
+- [Nix package manager](https://nixos.org/download/) (runs on any Linux, macOS or WSL; NixOS is not needed) with
+  flakes enabled
+- [direnv](https://direnv.net/) hooked into your shell
+- Optional: [nix-direnv](https://github.com/nix-community/nix-direnv), which caches the dev shell (instant `cd` instead
+  of a re-evaluation) and protects it from `nix-collect-garbage`
 
 Node.js and pnpm come from the dev shell in `flake.nix`, pinned via `flake.lock`. On first `cd` into the repo run
 `direnv allow`; afterwards the shell loads automatically. Without direnv: `nix develop`.
@@ -82,6 +84,9 @@ Playwright's test runner is installed by `pnpm install`. Browser binaries, howev
 ```sh
 pnpm exec playwright install --with-deps chromium
 ```
+
+This doesn't work on NixOS hosts (no apt, and the downloaded browsers aren't built for NixOS); there, provide
+the browsers via nixpkgs' `playwright-driver.browsers` matching the `@playwright/test` version.
 
 Then:
 

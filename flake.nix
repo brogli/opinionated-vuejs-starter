@@ -5,7 +5,7 @@
     { nixpkgs, ... }:
     {
       devShells = nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (system: {
-        default = nixpkgs.legacyPackages.${system}.mkShell {
+        default = nixpkgs.legacyPackages.${system}.mkShellNoCC {
           packages = with nixpkgs.legacyPackages.${system}; [
             nodejs_24
             pnpm_11
