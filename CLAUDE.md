@@ -21,7 +21,7 @@ When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one chan
 - `pnpm preview` — serve the production build on `http://localhost:4173`
 - `pnpm type-check` — `vue-tsc --build` only
 - `pnpm test:unit` — Vitest (jsdom). Append a path/pattern to run a subset, e.g. `pnpm test:unit HelloWorld`
-- `pnpm test:e2e` — Playwright. Browser binaries are per-machine (`~/.cache/ms-playwright/`), shared across projects; install once per machine with `pnpm exec playwright install --with-deps chromium` if missing. Only the Chromium project is configured. Useful flags: `--debug`, or pass a spec path.
+- `pnpm test:e2e` — Playwright. Chromium comes from the Nix dev shell (`playwright-driver.browsers` via `PLAYWRIGHT_BROWSERS_PATH` in `flake.nix`); do not run `playwright install`. Its version must equal `@playwright/test`, so bump both in one change. Only the Chromium project is configured. Useful flags: `--debug`, or pass a spec path.
 - `pnpm lint` — runs `lint:oxlint`, `lint:eslint`, `lint:stylelint` sequentially (all with `--fix`)
 - `pnpm format` — `oxfmt src/`
 - `treefmt` — repo-wide lint fixes + formatting (see below); `treefmt --ci` is the CI check (fails on unformatted files
@@ -76,7 +76,9 @@ before their components/composables work.
   cleanly (keyframes, complex selectors).
 
 - **Routing** (`src/router/index.ts`): `createWebHistory` with `import.meta.env.BASE_URL`. The home route is statically
-  imported; other views should be lazy-loaded with dynamic `import()` to preserve route-level code splitting.
+  imported; other views should be lazy-loaded with dynamic `import()` to preserve route-level code splitting. Every
+  route needs `meta.title`; `App.vue` feeds it to VueUse's `useTitle` for the document title.
+- **VueUse** (`@vueuse/core`): prefer its composables over hand-rolled browser/state utilities.
 - **State** (`src/stores/`): Pinia setup stores (composition-API style with `ref`/`computed`), one store per file, named
   `useXxxStore`.
 - **Views vs components**: `src/views/` holds route targets; `src/components/` holds reusable pieces. Component unit
@@ -138,6 +140,7 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 - `minimumReleaseAge: 7 days` as supply-chain buffer.
 - `nix` manager enabled: `flake.lock` refreshes via lockfile maintenance, gated by CI. The majors stay fixed by the
   attribute names (`nodejs_24`, `pnpm_11`); bumping them is manual.
+- `@playwright/test` is manual: it must match nixpkgs' `playwright-driver` (see Commands).
 - `platformAutomerge: false` is deliberate — GitHub's native auto-merge has not worked reliably here. Do not remove it.
 
 Requires the Mend GitHub App on the consuming repo; cloning the scaffold does not enable it.
