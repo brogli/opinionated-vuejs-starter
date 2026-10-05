@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { useTitle } from '@vueuse/core'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+
+const route = useRoute()
+useTitle(() => route.meta.title, { titleTemplate: '%s · opinionated vuejs starter' })
 </script>
 
 <template>

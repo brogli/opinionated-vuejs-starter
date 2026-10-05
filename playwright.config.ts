@@ -43,7 +43,7 @@ export default defineConfig({
     headless: !!process.env.CI,
   },
 
-  /* Chromium only; add engines here and to the `playwright install` commands in README and CI. */
+  /* Chromium only; add engines here and enable them in `flake.nix`. */
   projects: [
     {
       name: 'chromium',

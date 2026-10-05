@@ -29,6 +29,10 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 - Tailwind CSS
 - Stylelint
 
+### Helpers
+
+- VueUse
+
 ### Repo wide linting and formatting
 
 - treefmt
@@ -79,16 +83,12 @@ pnpm dev          # http://localhost:5173
 
 ### End-to-end tests
 
-Playwright's test runner is installed by `pnpm install`. Browser binaries, however, live in a per-machine cache (`~/.cache/ms-playwright/`) and are shared across projects. Install them per [Playwright's docs](https://playwright.dev/docs/intro#installing-playwright) — once per machine, and again after any `@playwright/test` version bump:
+Playwright's test runner is installed by `pnpm install`; Chromium and its system libraries come from the dev shell
+(nixpkgs' `playwright-driver.browsers`).
 
-```sh
-pnpm exec playwright install --with-deps chromium
-```
-
-This doesn't work on NixOS hosts (no apt, and the downloaded browsers aren't built for NixOS); there, provide
-the browsers via nixpkgs' `playwright-driver.browsers` matching the `@playwright/test` version.
-
-Then:
+Both must be the same Playwright version. If e2e fails with "Executable doesn't exist", `@playwright/test` and
+`flake.lock` have drifted apart: bump them together (`nix flake update`, then set `@playwright/test` to the version
+of `nix eval --raw --inputs-from . nixpkgs#playwright-driver.version`).
 
 ```sh
 # Run all e2e tests (will boot `pnpm dev` automatically)
