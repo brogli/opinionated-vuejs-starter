@@ -47,20 +47,7 @@ jobs:
       - name: Build (includes type-check)
         run: pnpm build
 
-      - name: Get Playwright version
-        id: playwright
-        run: echo "version=$(pnpm exec playwright --version | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
-
-      # Skips the download when the cache hit; --with-deps still ensures the apt packages.
-      - name: Install Playwright (Chromium headless-shell only)
-        run: pnpm exec playwright install --with-deps --only-shell chromium
-
+      # Browsers come from the dev shell (PLAYWRIGHT_BROWSERS_PATH in flake.nix).
       - name: End-to-end tests (Chromium only)
         run: pnpm test:e2e
 
