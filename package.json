@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@openuxkit/themes": "1.2.0",
-    "@openvue/openicons": "1.0.0",
+    "@openvue/openicons": "1.1.0",
     "@vue/devtools-api": "8.2.1",
     "@vueuse/core": "15.0.0",
     "openvue": "1.1.0",
