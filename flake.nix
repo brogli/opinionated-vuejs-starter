@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs =
     { nixpkgs, ... }:
@@ -12,8 +12,8 @@
         {
           default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              nodejs_24
-              pnpm_11
+              nodejs_26
+              pnpm_12
               treefmt
               nixfmt
             ];

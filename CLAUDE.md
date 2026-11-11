@@ -10,9 +10,10 @@ extending it, prefer minimal, idiomatic additions that stay useful across future
 ## Package manager
 
 Use **pnpm** exclusively. Do not introduce `npm`/`yarn` lockfiles. Node and pnpm come from the Nix dev shell in
-`flake.nix` (`nodejs_24`, `pnpm_11` from `nixos-unstable`), loaded via direnv (`.envrc`) locally and via
+`flake.nix` (`nodejs_26`, `pnpm_12` from `nixpkgs-unstable`), loaded via direnv (`.envrc`) locally and via
 `nix develop` in CI. Do not add `.nvmrc`, `engines` or `packageManager` — `flake.lock` is the single source of truth.
-When bumping the Node major, update `nodejs_*` and `@tsconfig/node*` in one change.
+When bumping the Node major, update `nodejs_*`, `@tsconfig/node*` and `@types/node` in one change (Renovate skips
+`@types/node` majors for this reason).
 
 ## Commands
 
@@ -136,10 +137,11 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 `renovate.json` extends `config:best-practices` (digest pinning, abandonment detection, weekly lockfile maintenance). Policy:
 
 - **Auto-merge**: minor/patch/pin/digest on ≥1.0.0; lockfile maintenance.
-- **Manual**: majors; any 0.x minor/patch (semver treats 0.minor as potentially breaking). The 0.x exclusion rule must come **last** in `packageRules` to override the general automerge rule — Renovate applies later rules with higher priority.
+- **Manual**: majors; any 0.x minor/patch (semver treats 0.minor as potentially breaking). The 0.x exclusion rule must come **after** the general automerge rule to override it — Renovate applies later rules with higher priority.
+- **Exception**: `oxfmt` 0.x minor/patch auto-merges anyway (a formatting change fails `treefmt --ci`); its rule must come after the 0.x exclusion.
 - `minimumReleaseAge: 7 days` as supply-chain buffer.
 - `nix` manager enabled: `flake.lock` refreshes via lockfile maintenance, gated by CI. The majors stay fixed by the
-  attribute names (`nodejs_24`, `pnpm_11`); bumping them is manual.
+  attribute names (`nodejs_26`, `pnpm_12`); bumping them is manual.
 - `@playwright/test` is manual: it must match nixpkgs' `playwright-driver` (see Commands).
 - `platformAutomerge: false` is deliberate — GitHub's native auto-merge has not worked reliably here. Do not remove it.
 
