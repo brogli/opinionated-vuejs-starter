@@ -143,6 +143,7 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 - `nix` manager enabled: `flake.lock` refreshes via lockfile maintenance, gated by CI. The majors stay fixed by the
   attribute names (`nodejs_26`, `pnpm_12`); bumping them is manual.
 - `@playwright/test` is manual: it must match nixpkgs' `playwright-driver` (see Commands).
+- `stylelint` and `stylelint-config-*` are grouped: config majors target a specific stylelint major.
 - `platformAutomerge: false` is deliberate — GitHub's native auto-merge has not worked reliably here. Do not remove it.
 
 Requires the Mend GitHub App on the consuming repo; cloning the scaffold does not enable it.
