@@ -41,6 +41,11 @@ VueJs itself, using the features I need from that. On top of that I add even mor
 
 - Renovate
 
+### Releases
+
+- GitHub releases with generated notes from merged PR titles (bot PRs and the `no-release-notes` label excluded).
+  To release: bump `version` in `package.json`, run the **Release draft** workflow on `main`, then publish the draft.
+
 ### Dev-Env and CI Env
 
 - direnv
