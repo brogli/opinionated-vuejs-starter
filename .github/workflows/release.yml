@@ -1,0 +1,64 @@
+name: Release draft
+
+# Started by hand on main, on a commit CI has passed: drafts a release with generated
+# notes. Publishing the draft by hand creates the tag on that commit.
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Refuse any branch but main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Releases are drafted from main only."
+          exit 1
+
+      - name: Refuse a commit CI has not passed
+        run: |
+          passed=$(gh run list --workflow ci.yml --commit "$GITHUB_SHA" --status success \
+            --json databaseId --jq length)
+          if [ "$passed" = 0 ]; then
+            echo "::error::CI has not passed on $GITHUB_SHA: wait for its run, or start one."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # Publishing a draft creates its tag: an existing tag is a released version.
+      - name: Refuse a released version
+        id: version
+        run: |
+          version=$(jq -r .version package.json)
+          if gh api "repos/$GH_REPO/git/ref/tags/$version" --silent 2>/dev/null; then
+            echo "::error::$version is already released: raise the version in package.json."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # Older drafts go first: a failed attempt's draft may carry the same version.
+      - name: Replace older drafts with this one
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          for id in $(gh api --paginate "repos/$GH_REPO/releases" --jq '.[] | select(.draft) | .id'); do
+            gh api --method DELETE "repos/$GH_REPO/releases/$id"
+          done
+          gh release create "$VERSION" --draft --target "$GITHUB_SHA" --title "$VERSION" --generate-notes
