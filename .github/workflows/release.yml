@@ -47,8 +47,8 @@ jobs:
         id: version
         run: |
           version=$(jq -r .version package.json)
-          if gh api "repos/$GH_REPO/git/ref/tags/v$version" --silent 2>/dev/null; then
-            echo "::error::v$version is already released: raise the version in package.json."
+          if gh api "repos/$GH_REPO/git/ref/tags/$version" --silent 2>/dev/null; then
+            echo "::error::$version is already released: raise the version in package.json."
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -61,4 +61,4 @@ jobs:
           for id in $(gh api --paginate "repos/$GH_REPO/releases" --jq '.[] | select(.draft) | .id'); do
             gh api --method DELETE "repos/$GH_REPO/releases/$id"
           done
-          gh release create "v$VERSION" --draft --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes
+          gh release create "$VERSION" --draft --target "$GITHUB_SHA" --title "$VERSION" --generate-notes

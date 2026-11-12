@@ -135,7 +135,7 @@ Playwright's `webServer` reuses an already-running dev server locally, so `pnpm 
 ## Releases
 
 `.github/workflows/release.yml` is manual (`workflow_dispatch`): on `main`, on a commit CI passed, it drafts release
-`v<package.json version>` with GitHub-generated notes (`.github/release.yml` excludes bot PRs). Publishing the draft
+`<package.json version>` with GitHub-generated notes (`.github/release.yml` excludes bot PRs). Publishing the draft
 creates the tag. No release assets: SPAs deploy, they don't ship binaries. Release notes are PR titles, so keep them
 meaningful.
 
